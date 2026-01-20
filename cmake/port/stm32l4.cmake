@@ -30,7 +30,6 @@ add_compile_options(
 )
 add_link_options(
     ${compile_and_link_options}
-    -T${linker_script}
     -nostartfiles
     -nodefaultlibs
     -nostdlib
