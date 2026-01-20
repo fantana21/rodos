@@ -50,9 +50,10 @@ target_include_directories(rodos_rodos PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/support/support-libs>
 )
 
-target_compile_options(rodos_rodos PUBLIC -fno-exceptions -Wall -Wpedantic -Wextra -Wcast-qual -Wconversion
-    -Wsign-conversion -Wfloat-conversion -Wdouble-promotion -Wnull-dereference -Wstrict-aliasing -Wno-long-long
-    -Wno-cpp)
+target_compile_options(rodos_rodos PUBLIC -fno-exceptions)
+target_compile_options(rodos_rodos PRIVATE -Wall -Wpedantic -Wextra -Wcast-qual -Wconversion
+    -Wsign-conversion -Wfloat-conversion -Wdouble-promotion -Wnull-dereference -Wstrict-aliasing
+    -Wno-long-long -Wno-cpp)
 target_compile_features(rodos_rodos PUBLIC cxx_std_20)
 
 option(ENABLE_RODOS_RTTI "Build RODOS with run-time type information" OFF)
