@@ -8,8 +8,11 @@
 #pragma once
 
 
+// IWYU pragma: begin_exports
 
 #include "hal/hal_uart.h"
 #include "hal/hal_can.h"
-using namespace RODOS;
 
+// IWYU pragma: end_exports
+
+using namespace RODOS;

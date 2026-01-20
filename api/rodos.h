@@ -9,6 +9,6 @@
 #pragma once
 
 
-#include "rodos_scoped.h"
+#include "rodos_scoped.h"   // IWYU pragma: export
 
 using namespace RODOS;

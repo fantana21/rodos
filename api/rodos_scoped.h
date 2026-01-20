@@ -9,6 +9,8 @@
 #pragma once
 
 
+// IWYU pragma: begin_exports
+
 #include "rodos-version.h"
 
 #include <stdint.h>
@@ -55,3 +57,5 @@
 #include "yprintf.h"
 
 #include "gateway.h"
+
+// IWYU pragma: end_exports
