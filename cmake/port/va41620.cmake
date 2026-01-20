@@ -14,6 +14,7 @@ set(compile_and_link_options
     -mcpu=cortex-m4
     -mfloat-abi=softfp
     -mfpu=fpv4-sp-d16
+    -specs=nano.specs
 )
 set(compile_options
     ${compile_and_link_options}
@@ -23,8 +24,7 @@ set(compile_options
 set(link_options
     ${compile_and_link_options}
     -nostartfiles
-    -nodefaultlibs
-    -nostdlib
+    -specs=nosys.specs
     -Xlinker --gc-sections
     -fno-unwind-tables
     -fno-asynchronous-unwind-tables
@@ -52,5 +52,4 @@ set(directories_to_include
 
 set(libraries_to_link
     m
-    gcc
 )
