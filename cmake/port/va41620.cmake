@@ -22,7 +22,6 @@ set(compile_options
 )
 set(link_options
     ${compile_and_link_options}
-    -T${linker_script}
     -nostartfiles
     -nodefaultlibs
     -nostdlib
