@@ -49,8 +49,6 @@ void waitAbout5Seconds(){
 }
 
 extern "C" [[noreturn, gnu::used]] void Reset_Handler(){
-    //TODO remove before flight
-    waitAbout5Seconds();
     memoryBarrier();
     initDataSection();
     initBssSection();
