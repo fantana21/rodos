@@ -8,6 +8,8 @@
 #pragma once
 
 
+// IWYU pragma: begin_exports
+
 #include "gateway/gateway.h"
 #include "gateway/router.h"
 #include "gateway/linkinterface.h"
@@ -16,6 +18,4 @@
 #include "gateway/linkinterfacecan.h"
 #include "gateway/linkinterfaceshm.h"
 
-
-
-
+// IWYU pragma: end_exports
