@@ -8,11 +8,6 @@ set(linker_script ${RODOS_DIR}/src/bare-metal/va41620/scripts/linkerscript.ld)
 set(port_dir "bare-metal/va41620")
 set(is_port_baremetal TRUE)
 
-set(CMAKE_SYSTEM_NAME Generic)
-
-set(CMAKE_C_COMPILER arm-none-eabi-gcc)
-set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
-
 if(NOT DEFINED RODOS_PLL_TARGET_FREQUENCY)
     set(RODOS_PLL_TARGET_FREQUENCY 100000000)
     message("Did not get RODOS_PLL_TARGET_FREQUENCY override, using default: ${RODOS_PLL_TARGET_FREQUENCY}")
@@ -20,25 +15,6 @@ else()
     message("RODOS_PLL_TARGET_FREQUENCY used ${RODOS_PLL_TARGET_FREQUENCY}")
 endif()
 
-set(compile_and_link_options
-    -mcpu=cortex-m4
-    -mfloat-abi=softfp
-    -mfpu=fpv4-sp-d16
-    -specs=nano.specs
-)
-set(compile_options
-    ${compile_and_link_options}
-    -gdwarf-2
-    -mthumb
-)
-set(link_options
-    ${compile_and_link_options}
-    -nostartfiles
-    -specs=nosys.specs
-    -Xlinker --gc-sections
-    -fno-unwind-tables
-    -fno-asynchronous-unwind-tables
-)
 set(compile_definitions
     ATOMIC_VARIANT=ATOMIC_VARIANT_STD_FALLBACK_CUSTOM
     PLL_TARGET_FREQUENCY=${RODOS_PLL_TARGET_FREQUENCY}
