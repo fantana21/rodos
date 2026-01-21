@@ -2,12 +2,16 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
+# Must be included before project() because it may set a default toolchain file
+if(RODOS_PORT_NAME)
+    include("cmake/port/${RODOS_PORT_NAME}.cmake")
+endif()
+
 project(
     rodos
     VERSION 0.1.0
     LANGUAGES C CXX ASM
 )
-
 
 if (COVERAGE)
     if (NOT CMAKE_BUILD_TYPE)
@@ -19,7 +23,7 @@ if (COVERAGE)
 endif ()
 
 if (NOT DEFINED port_dir)
-    message(FATAL_ERROR "port not correct (CMAKE_TOOLCHAIN_FILE, see readme)")
+    message(FATAL_ERROR "port not correct (set RODOS_PORT_NAME or CMAKE_TOOLCHAIN_FILE, see readme)")
 endif ()
 
 #___________________________________________________________________
