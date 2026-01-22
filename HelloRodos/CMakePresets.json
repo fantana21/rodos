@@ -1,0 +1,59 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 16,
+    "patch": 3
+  },
+  "configurePresets": [
+    {
+      "name": "common",
+      "hidden": true,
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release;MinSizeRel",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "linux-x86",
+      "inherits": "common",
+      "toolchainFile": "../cmake/toolchains/linux-x86.cmake",
+      "cacheVariables": {
+        "RODOS_PORT_NAME": "linux-x86"
+      }
+    },
+    {
+      "name": "eo-ce",
+      "inherits": "common",
+      "toolchainFile": "../cmake/toolchains/eo_ce.cmake",
+      "cacheVariables": {
+        "CMAKE_TRY_COMPILE_TARGET_TYPE": "STATIC_LIBRARY",
+        "RODOS_PORT_NAME": "eo_ce"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-x86-debug",
+      "configurePreset": "linux-x86",
+      "configuration": "Debug"
+    },
+    {
+      "name": "linux-x86-release",
+      "configurePreset": "linux-x86",
+      "configuration": "Release"
+    },
+    {
+      "name": "eo-ce-debug",
+      "configurePreset": "eo-ce",
+      "configuration": "Debug"
+    },
+    {
+      "name": "eo-ce-minsizerel",
+      "configurePreset": "eo-ce",
+      "configuration": "MinSizeRel"
+    }
+  ]
+}
