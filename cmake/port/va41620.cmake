@@ -19,7 +19,6 @@ set(compile_definitions
     ATOMIC_VARIANT=ATOMIC_VARIANT_STD_FALLBACK_CUSTOM
     PLL_TARGET_FREQUENCY=${RODOS_PLL_TARGET_FREQUENCY}
 )
-
 set(sources_to_add
     ${RODOS_DIR}/src/bare-metal/va41620/hw/*.cpp
     ${RODOS_DIR}/src/bare-metal/va41620/startup/*.cpp
@@ -31,12 +30,17 @@ set(sources_to_add
     ${RODOS_DIR}/src/bare-metal/va41620/hw_hal/*.cpp
     ${RODOS_DIR}/src/bare-metal/va41620/hw_hal/can/*.cpp
 )
-
 set(directories_to_include
     src/bare-metal/va41620/api_includes
     src/bare-metal/va41620/subtargets/${board}
 )
-
 set(libraries_to_link
     m
+)
+
+# Set a default toolchain file
+set(CMAKE_TOOLCHAIN_FILE
+    "${CMAKE_CURRENT_LIST_DIR}/../toolchains/va41620.cmake"
+    CACHE FILEPATH
+    "Toolchain file for cross-compiling"
 )
