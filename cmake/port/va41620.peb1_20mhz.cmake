@@ -1,0 +1,4 @@
+set(board peb1)
+set(RODOS_PLL_TARGET_FREQUENCY 20'000'000)
+
+include(${CMAKE_CURRENT_LIST_DIR}/va41620.cmake)
