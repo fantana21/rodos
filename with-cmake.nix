@@ -49,5 +49,5 @@ in
   raspberrypi3 = compile_only "raspberrypi3" pkgs.gcc-arm-embedded.stdenv;
   sf2 = compile_only "sf2" pkgs.gcc-arm-embedded.stdenv;
   nucleo_l496zg = compile_only "nucleo_l496zg" pkgs.gcc-arm-embedded.stdenv;
-  va41620 = compile_only "va41620" pkgs.gcc-arm-embedded.stdenv;
+  va41620.peb1_100mhz = compile_only "va41620.peb1_100mhz" pkgs.gcc-arm-embedded.stdenv;
 }
