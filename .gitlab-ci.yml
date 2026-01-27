@@ -76,10 +76,10 @@ nucleo_l496zg:
   variables:
     TARGET: nucleo_l496zg
 
-va41620:
+va41620.peb1_100mhz:
   extends: .compile_tmpl
   variables:
-    TARGET: va41620
+    TARGET: va41620.peb1_100mhz
 
 
 
