@@ -118,7 +118,7 @@ if (libraries_to_link)
 endif ()
 
 if (linker_script)
-  target_link_options(rodos_rodos PUBLIC -T${linker_script})
+  target_link_options(rodos_rodos PUBLIC $<BUILD_INTERFACE:-T${linker_script}>)
 endif()
 
 if (EXECUTABLE)
