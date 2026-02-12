@@ -10,6 +10,7 @@ cov_test = (target: env: env.mkDerivation {
     "-DCMAKE_TOOLCHAIN_FILE=../cmake/port/${target}.cmake"
     "-DEXECUTABLE=ON"
     "-DCOVERAGE=ON"
+    "-DCMAKE_BUILD_TYPE=Debug"
   ];
   installPhase =
     ''
