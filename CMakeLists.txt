@@ -8,24 +8,20 @@ project(
     LANGUAGES C CXX ASM
 )
 
-# This variable is set by project() in CMake 3.21+
-string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" PROJECT_IS_TOP_LEVEL)
-if (PROJECT_IS_TOP_LEVEL)
-    # Developer mode enables targets and code paths in the CMake scripts that are only relevant for
-    # the developers of RODOS. Targets necessary to build the project must be provided
-    # unconditionally, so consumers can trivially build and package the project. The option is ON by
-    # default for backward compatibility.
-    option(RODOS_DEVELOPER_MODE "Enable developer mode" ON)
-    if (RODOS_DEVELOPER_MODE)
-        option(COVERAGE "Enable code coverage generation" OFF)
-        if (COVERAGE)
-            if (NOT CMAKE_BUILD_TYPE)
-                set(CMAKE_BUILD_TYPE "Debug")
-                message(STATUS "Coverage enabled, setting build type to Debug")
-            endif ()
-            include(cmake/CodeCoverage.cmake)
-            append_coverage_compiler_flags()
+# Developer mode enables targets and code paths in the CMake scripts that are only relevant for
+# the developers of RODOS. Targets necessary to build the project must be provided
+# unconditionally, so consumers can trivially build and package the project. The option is ON by
+# default for backward compatibility.
+option(RODOS_DEVELOPER_MODE "Enable developer mode" ON)
+if (RODOS_DEVELOPER_MODE)
+    option(COVERAGE "Enable code coverage generation" OFF)
+    if (COVERAGE)
+        if (NOT CMAKE_BUILD_TYPE)
+            set(CMAKE_BUILD_TYPE "Debug")
+            message(STATUS "Coverage enabled, setting build type to Debug")
         endif ()
+        include(cmake/CodeCoverage.cmake)
+        append_coverage_compiler_flags()
     endif ()
 endif ()
 
