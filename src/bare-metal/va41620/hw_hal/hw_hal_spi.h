@@ -10,6 +10,7 @@ class HW_HAL_SPI {
 public:
     HW_HAL_SPI(SPI_IDX idx, GPIO_PIN sckPin, GPIO_PIN misoPin, GPIO_PIN mosiPin, GPIO_PIN nssPin);
     void init(uint32_t baudrate);
+    int32_t config(SPI_PARAMETER_TYPE type, int32_t value);
 
     bool writeRead(const std::byte* txBuffer, size_t txLen, std::byte* rxBuffer, size_t rxLen);
 

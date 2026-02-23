@@ -11,10 +11,10 @@ namespace RODOS {
 HW_HAL_SPI::HW_HAL_SPI(SPI_IDX idx, GPIO_PIN sckPin, GPIO_PIN misoPin, GPIO_PIN mosiPin, GPIO_PIN nssPin)
 : m_idx { idx }
 , m_spi { spis[idx] }
-, m_misoPin { misoPin } 
+, m_misoPin { misoPin }
 , m_mosiPin { mosiPin }
 , m_sckPin { sckPin }
-, m_nssPin { nssPin } 
+, m_nssPin { nssPin }
 {}
 
 void HW_HAL_SPI::init(uint32_t baudrate) {
@@ -40,6 +40,17 @@ void HW_HAL_SPI::init(uint32_t baudrate) {
         m_spi.CTRL1.write(SS(static_cast<uint32_t>(nssIndex)), BLOCKMODE(1), BMSTALL(1), ENABLE(1));
     }
 }
+
+
+int32_t HW_HAL_SPI::config(SPI_PARAMETER_TYPE type, int32_t value) {
+    if(type == SPI_PARAMETER_MODE) {
+        m_spi.CTRL0.write(SPI_CTRL0::SPO((value >> 1) & 0x1), SPI_CTRL0::SPH(value & 0x1));
+        return 0;
+    }
+    RODOS_ERROR("SPI config parameter type not yet supported!");
+    return -1;
+}
+
 
 HW_HAL_SPI::SpiPrescalers HW_HAL_SPI::calculatePrescalers(int32_t baudrate){
     //see Programmer's Guide section 11.4.5 for baudrate calculation
@@ -91,7 +102,7 @@ bool HW_HAL_SPI::writeRead(const std::byte* txBuffer, size_t txSize, std::byte* 
     using namespace SPI_STATUS;
     using namespace SPI_DATA;
     using namespace SPI_FIFO_CLR;
-    if((txBuffer==nullptr&&txSize!=0) || (rxBuffer==nullptr&&rxSize!=0)){        
+    if((txBuffer==nullptr&&txSize!=0) || (rxBuffer==nullptr&&rxSize!=0)){
         return false;
     }
     constexpr std::byte DUMMY_BYTE { 0xFF };
