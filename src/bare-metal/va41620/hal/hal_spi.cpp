@@ -36,9 +36,8 @@ void HAL_SPI::reset() {
     RODOS_ERROR("SPI reset not supported yet!");
 }
 
-int32_t HAL_SPI::config(SPI_PARAMETER_TYPE, int32_t) {
-    RODOS_ERROR("SPI config not supported yet!");
-    return -1;
+int32_t HAL_SPI::config(SPI_PARAMETER_TYPE type, int32_t value) {
+    return context->config(type, value);
 }
 
 int32_t HAL_SPI::status(SPI_STATUS_TYPE) {
