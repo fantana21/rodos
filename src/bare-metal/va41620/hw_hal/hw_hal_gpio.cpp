@@ -55,7 +55,15 @@ int32_t HW_HAL_GPIO::setPull(pin_config::PULL pull){
 }
 
 void HW_HAL_GPIO::reset(){
-    RODOS_ERROR("reset not implemented");
+    m_gpio.DIR.clearBits(m_pinMask);
+    m_gpio.DATAOUT.clearBits(m_pinMask);
+
+    disableInterrupts();
+    m_gpio.IRQ_SEN.clearBits(m_pinMask);
+    m_gpio.IRQ_EDGE.clearBits(m_pinMask);
+    m_gpio.IRQ_EVT.clearBits(m_pinMask);
+    (void)m_gpio.EDGE_STATUS.read();  // EDGE_STATUS is cleared by reading it
+    m_interruptEventOccurred = false;
 }
 
 void HW_HAL_GPIO::setOutput(uint16_t val){
