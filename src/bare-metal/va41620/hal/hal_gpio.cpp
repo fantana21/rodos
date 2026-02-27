@@ -38,7 +38,7 @@ int32_t HAL_GPIO::config(GPIO_CFG_TYPE type, uint32_t paramVal)
 
     case GPIO_CFG_IRQ_SENSITIVITY:
         if (paramVal <= GPIO_IRQ_SENS_FALLING) {
-            context->m_irqSensitivity = (RODOS::GPIO_IRQ_SENSITIVITY)paramVal;
+            context->setIrqSensitivity((RODOS::GPIO_IRQ_SENSITIVITY)paramVal);
             return 0;
         }
         return -1;
