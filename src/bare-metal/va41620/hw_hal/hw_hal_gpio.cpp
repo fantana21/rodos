@@ -39,9 +39,13 @@ int32_t HW_HAL_GPIO::setNumPins(uint32_t numPins){
 }
 
 int32_t HW_HAL_GPIO::setPull(pin_config::PULL pull){
-    (void) pull;
-    RODOS_ERROR("setPull not implemented");
-    return -1;
+    for(int8_t i = 0; i < m_numPins; ++i){
+        ioconfig->PINx[m_idx + i].set(
+            IOCONFIG_PINx::PEN(pull == pin_config::PULL::OFF ? 0 : 1),
+            IOCONFIG_PINx::PLEVEL(pull == pin_config::PULL::DOWN ? 0 : 1)
+        );
+    }
+    return 0;
 }
 
 void HW_HAL_GPIO::reset(){
