@@ -24,14 +24,25 @@ int32_t HW_HAL_GPIO::init(bool isOutput, uint8_t numOfPins, uint32_t initVal){
     sysconfigPeripheralBitband->GPIO_PORT_ENABLE[m_portNum].write(1);
     if(isOutput){
         setOutput(static_cast<uint16_t>(initVal));
-        m_gpio.DIR.setBits(m_pinMask);
+        setMode(GPIO::MODE::OUTPUT);
     }
     return returnValue;
 }
 
 int32_t HW_HAL_GPIO::setMode(GPIO::MODE mode){
-    (void) mode;
-    RODOS_ERROR("setMode not implemented");
+    switch(mode){
+        case GPIO::MODE::INPUT:
+            m_gpio.DIR.clearBits(m_pinMask);
+            return 0;
+        case GPIO::MODE::OUTPUT:
+            // Enable reading from the pins even in output mode
+            for(int8_t i = 0; i < m_numPins; ++i){
+                ioconfig->PINx[m_idx + i].setBits(IOCONFIG_PINx::IEWO(1));
+            }
+            m_gpio.DIR.setBits(m_pinMask);
+            return 0;
+    }
+    RODOS_ERROR("Invalid GPIO mode");
     return -1;
 }
 
