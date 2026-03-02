@@ -21,7 +21,7 @@ int32_t HAL_GPIO::config(GPIO_CFG_TYPE type, uint32_t paramVal)
 {
     switch (type) {
     case GPIO_CFG_OUTPUT_ENABLE:
-        context->setMode(GPIO::MODE::OUTPUT);
+        context->setMode(paramVal ? GPIO::MODE::OUTPUT : GPIO::MODE::INPUT);
         return 0;
 
     case GPIO_CFG_NUM_OF_PINS:
