@@ -8,16 +8,16 @@
 #pragma once
 
 
+// IWYU pragma: begin_exports
+
 #include "gateway/gateway.h"
 #include "gateway/linkinterface.h"
 #include "gateway/linkinterfaceuart.h"
 #include "gateway/linkinterfacecan.h"
 #include "gateway/linkinterfaceudp.h"
 
-
 #include "putter.h"
 
+// IWYU pragma: end_exports
+
 using namespace RODOS;
-
-
-
