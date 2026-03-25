@@ -8,14 +8,21 @@ project(
     LANGUAGES C CXX ASM
 )
 
-
-if (COVERAGE)
-    if (NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE "Debug")
-        message(STATUS "Coverage enabled, setting build type to Debug")
+# Developer mode enables targets and code paths in the CMake scripts that are only relevant for
+# the developers of RODOS. Targets necessary to build the project must be provided
+# unconditionally, so consumers can trivially build and package the project. The option is ON by
+# default for backward compatibility.
+option(RODOS_DEVELOPER_MODE "Enable developer mode" ON)
+if (RODOS_DEVELOPER_MODE)
+    option(COVERAGE "Enable code coverage generation" OFF)
+    if (COVERAGE)
+        if (NOT CMAKE_BUILD_TYPE)
+            set(CMAKE_BUILD_TYPE "Debug")
+            message(STATUS "Coverage enabled, setting build type to Debug")
+        endif ()
+        include(cmake/CodeCoverage.cmake)
+        append_coverage_compiler_flags()
     endif ()
-    include(cmake/CodeCoverage.cmake)
-    append_coverage_compiler_flags()
 endif ()
 
 if (NOT DEFINED port_dir)
@@ -50,10 +57,15 @@ target_include_directories(rodos_rodos PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/support/support-libs>
 )
 
-target_compile_options(rodos_rodos PUBLIC -fno-exceptions -g -Wall -Wpedantic -Wextra -Wcast-qual -Wconversion
-    -Wsign-conversion -Wfloat-conversion -Wdouble-promotion -Wnull-dereference -Wstrict-aliasing -Wno-long-long
-    -Wno-cpp)
+target_compile_options(rodos_rodos PUBLIC -fno-exceptions)
 target_compile_features(rodos_rodos PUBLIC cxx_std_20)
+if (RODOS_DEVELOPER_MODE)
+    target_compile_options(
+        rodos_rodos PUBLIC -g -Wall -Wpedantic -Wextra -Wcast-qual -Wconversion -Wsign-conversion
+        -Wfloat-conversion -Wdouble-promotion -Wnull-dereference -Wstrict-aliasing -Wno-long-long
+        -Wno-cpp
+    )
+endif ()
 
 option(ENABLE_RODOS_RTTI "Build RODOS with run-time type information" OFF)
 if (NOT ENABLE_RODOS_RTTI)
@@ -120,6 +132,7 @@ if (linker_script)
   target_link_options(rodos_rodos PUBLIC -T${linker_script})
 endif()
 
+option(EXECUTABLE "Build executables for RODOS tutorials" OFF)
 if (EXECUTABLE)
     include(cmake/executable.cmake)
     add_subdirectory(tutorials)
@@ -130,21 +143,24 @@ endif ()
 include(cmake/install-rules.cmake)
 
 
-if (COVERAGE)
-    setup_lcov_coverage(
-        NAME coverage
-        LCOV_ARGS "--no-external")
-    message("Generate coverage report with 'make coverage_collect'")
-    add_custom_command(TARGET coverage_collect POST_BUILD
-        COMMAND sed -ie "s@SF:${CMAKE_CURRENT_SOURCE_DIR}/\\(.*\\)@SF:\\1@g"
-        ${CMAKE_CURRENT_BINARY_DIR}/coverage.info
-        COMMENT "Changing paths in coverage.info to relative paths."
-        VERBATIM
+if (RODOS_DEVELOPER_MODE)
+    if (COVERAGE)
+        setup_lcov_coverage(
+            NAME coverage
+            LCOV_ARGS "--no-external")
+        message("Generate coverage report with 'make coverage_collect'")
+        add_custom_command(TARGET coverage_collect POST_BUILD
+            COMMAND sed -ie "s@SF:${CMAKE_CURRENT_SOURCE_DIR}/\\(.*\\)@SF:\\1@g"
+            ${CMAKE_CURRENT_BINARY_DIR}/coverage.info
+            COMMENT "Changing paths in coverage.info to relative paths."
+            VERBATIM
         )
-endif ()
-enable_testing()
-add_subdirectory(test-suite)
+    endif ()
+    enable_testing()
+    add_subdirectory(test-suite)
 
-if (UNIT_TESTS)
-  add_subdirectory(support/test)
-endif()
+    option(UNIT_TESTS "Enable building unit tests" OFF)
+    if (UNIT_TESTS)
+        add_subdirectory(support/test)
+    endif ()
+endif ()
