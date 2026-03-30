@@ -1,0 +1,9 @@
+
+The commander is not here. 
+here we will use links to a programm called
+	generic
+But the sources are in
+	/home/sem40wk/sergio/projekte/interne/sat-applications/EGSE/src/commanderUDP
+		commander-generic-ccsds.cpp
+
+
