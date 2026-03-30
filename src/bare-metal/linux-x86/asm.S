@@ -10,6 +10,8 @@
 
 .file "asm.S"
 
+.section .note.GNU-stack,"",@progbits
+
 .section ".text"
 
 __asmSwitchToContext:

@@ -36,6 +36,9 @@ public:
     virtual void yputc(char c) { *destination = c; destination++; *destination = 0; }
 };
 
+
+extern void putsFixLen(const char* str, int len);
+
 /*******************/
 
 extern void xprintf(const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));

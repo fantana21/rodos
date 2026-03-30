@@ -41,6 +41,21 @@ constexpr int64_t DAYS         = (24LL * HOURS);
 constexpr int64_t WEEKS        = (7LL * DAYS);
 
 /**
+* Suffix operator for time literals in seconds to nanoseconds.
+*  use for example 10_ms or 10_us or 10_ns
+*  sorry, but the parameter has to be unsigned long long, says g++ !
+*/
+inline int64_t operator"" _ns(unsigned long long nanoseconds)  { return (int64_t)(nanoseconds);                 }
+inline int64_t operator"" _us(unsigned long long microseconds) { return (int64_t)(microseconds * MICROSECONDS); }
+inline int64_t operator"" _ms(unsigned long long milliseconds) { return (int64_t)(milliseconds * MILLISECONDS); }
+inline int64_t operator""  _s(unsigned long long seconds)      { return (int64_t)(seconds      * SECONDS);      }
+inline int64_t operator"" _mins(unsigned long long minutes)    { return (int64_t)(minutes      * MINUTES);      }
+inline int64_t operator"" _h(unsigned long long hours)         { return (int64_t)(hours        * HOURS);        }
+inline int64_t operator"" _days(unsigned long long days)       { return (int64_t)(days         * DAYS);         }
+inline int64_t operator"" _weeks(unsigned long long weeks)     { return (int64_t)(weeks        * WEEKS);        }
+
+
+/**
 * @class TimeModel
 * @brief %Time conversion/transformation functions
 *

@@ -15,6 +15,14 @@
 
 namespace RODOS {
 
+void putsFixLen(const char* str, int len) {
+    if(printfMask == 0) return;
+    for(int i = 0; i < len; i++) {
+        if(*str != 0 ) putchar(*str++);
+        else putchar(' ');
+    }
+}
+
 void Yprintf::vaprintf(const char *fmt) {
     char c;
 
