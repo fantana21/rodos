@@ -20,6 +20,9 @@ class HelloVa41620 : public RODOS::StaticThread<> {
         ledPin2.setPins(1); // Top LED
         RODOS::AT(RODOS::NOW() + 1 * RODOS::SECONDS);
 
+        RODOS::PRINTF("Hello VA41620\n");
+        RODOS::PRINTF("s = %s, d = %017d, c = %c, f = %11.5f\n", "string", 42, 'X', 3.14);
+
         static constexpr auto toggleInterval = 250 * RODOS::MILLISECONDS;
         TIME_LOOP(0, toggleInterval) {
             if(ledPin1.readPins() == 0) {
