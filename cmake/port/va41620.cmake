@@ -31,6 +31,8 @@ set(compile_options
     ${compile_and_link_options}
     -gdwarf-2
     -mthumb
+    -ffunction-sections
+    -fdata-sections
 )
 set(link_options
     ${compile_and_link_options}
