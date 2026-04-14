@@ -49,8 +49,8 @@ void Yprintf::vaprintf(const char *fmt) {
             fill = c;
             c = *fmt++;
         }
-        if (c >= '0' && c <= '9') {
-            width = static_cast<char>(c - '0');
+        while (c >= '0' && c <= '9') {
+            width = static_cast<char>(width*10 + (c - '0'));
             c = *fmt++;
         }
         if (c == '.') {
@@ -310,4 +310,3 @@ void xsprintf(char* dest, const char *fmt, ...) {
 }
 
 } // namespace
-
