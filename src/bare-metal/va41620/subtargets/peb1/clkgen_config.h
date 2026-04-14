@@ -11,7 +11,7 @@ constexpr CLKGENConfigStruct clkgenConfig {
     .xtalMode = XTAL_MODE::EXT_CLK,
     .xtalFreq = 40'000'000, //must be <=100MHz for EXT_CLK or >=4MHz and <=10MHz for XTAL
     .usePLL = true,
-    .pllTargetFrequency = 10'000'000, //must be <= 100MHz
+    .pllTargetFrequency = PLL_TARGET_FREQUENCY, //must be <= 100MHz
     .requireExactPLLFrequency = true,
     .sysclkSource = SYSCLK_SOURCE::PLL
 };

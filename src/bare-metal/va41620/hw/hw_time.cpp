@@ -19,7 +19,7 @@ private:
     static constexpr float minTimeDrift {-1};
     static constexpr float maxTimeDrift {1};
     static_assert(minTimeDrift < maxTimeDrift);
-    static constinit RODOS::Atomic<float> timeDrift;
+    static RODOS::Atomic<float> timeDrift;
 
     static void initTiming(){
         using namespace TIM_CSD_CTRL;
@@ -64,7 +64,7 @@ public:
     }
 };
 
-constinit RODOS::Atomic<float> HW_Time::timeDrift{0};
+RODOS::Atomic<float> HW_Time::timeDrift{0};
 
 
 int64_t hwGetNanoseconds() {
