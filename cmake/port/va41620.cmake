@@ -15,10 +15,18 @@ else()
     message("RODOS_PLL_TARGET_FREQUENCY used ${RODOS_PLL_TARGET_FREQUENCY}")
 endif()
 
+if(board STREQUAL "eo_ce" AND NOT DEFINED eo_ce_version)
+    message(FATAL_ERROR "EO-CE version must be provided in board port file.")
+endif()
+
 set(compile_definitions
     ATOMIC_VARIANT=ATOMIC_VARIANT_STD_FALLBACK_CUSTOM
     PLL_TARGET_FREQUENCY=${RODOS_PLL_TARGET_FREQUENCY}
 )
+if(DEFINED eo_ce_version)
+    list(APPEND compile_definitions EO_CE_VERSION=${eo_ce_version})
+endif()
+
 set(sources_to_add
     ${RODOS_DIR}/src/bare-metal/va41620/hw/*.cpp
     ${RODOS_DIR}/src/bare-metal/va41620/startup/*.cpp
