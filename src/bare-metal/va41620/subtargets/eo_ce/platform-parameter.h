@@ -13,11 +13,12 @@ namespace RODOS {
  *
  */
 #ifndef UART_DEBUG_IDX
-#    define UART_DEBUG_IDX UART_IDX0
 #    if defined(EO_CE_VERSION) && EO_CE_VERSION > 1
-#        define UART_DEBUG_RX GPIO_003 // PA3
-#        define UART_DEBUG_TX GPIO_002 // PA2
+#        define UART_DEBUG_IDX UART_IDX2
+#        define UART_DEBUG_RX GPIO_047 // PC15
+#        define UART_DEBUG_TX GPIO_046 // PC14
 #    else
+#        define UART_DEBUG_IDX UART_IDX0
 #        define UART_DEBUG_RX GPIO_067 // PE3
 #        define UART_DEBUG_TX GPIO_066 // PE2
 #    endif
