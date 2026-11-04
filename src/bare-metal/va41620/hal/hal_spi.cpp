@@ -40,9 +40,8 @@ int32_t HAL_SPI::config(SPI_PARAMETER_TYPE type, int32_t value) {
     return context->config(type, value);
 }
 
-int32_t HAL_SPI::status(SPI_STATUS_TYPE) {
-    RODOS_ERROR("SPI status not supported yet!");
-    return -1;
+int32_t HAL_SPI::status(SPI_STATUS_TYPE type) {
+    return context->status(type);
 }
 
 bool HAL_SPI::isReadFinished(){

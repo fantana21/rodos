@@ -7,6 +7,16 @@
 #include <limits>
 
 namespace RODOS {
+namespace {
+//see Programmer's Guide section 11.4.5 for baudrate calculation
+constexpr int32_t CLOCK_FREQUENCY_NO_PRESCALER { globalClockSetup.getSysclkFrequency()/4 };
+
+
+constexpr int32_t calculateBaudrate(uint16_t clkprescale, uint16_t scrdv) {
+    return static_cast<int32_t>(CLOCK_FREQUENCY_NO_PRESCALER/((scrdv+1)*clkprescale));
+}
+}
+
 
 HW_HAL_SPI::HW_HAL_SPI(SPI_IDX idx, GPIO_PIN sckPin, GPIO_PIN misoPin, GPIO_PIN mosiPin, GPIO_PIN nssPin)
 : m_idx { idx }
@@ -30,9 +40,8 @@ void HW_HAL_SPI::init(uint32_t baudrate) {
     configurePin(m_sckPin);
     pin_config::SPI_NSS_INDEX nssIndex { configureSlaveSelect(m_nssPin) };
 
-    SpiPrescalers prescalers { calculatePrescalers(static_cast<int32_t>(baudrate)) };
-    m_spi.CLKPRESCALE.write(VALUE(prescalers.clkprescale));
-    m_spi.CTRL0.write(SIZE(WORD_SIZE_BITS-1), SCRDV(prescalers.scrdv));
+    m_spi.CTRL0.write(SIZE(WORD_SIZE_BITS-1));
+    setBaudrate(static_cast<int32_t>(baudrate));
 
     if(nssIndex == pin_config::SPI_NSS_INDEX::INVALID){
         m_spi.CTRL1.write(SOD(1), BLOCKMODE(1), BMSTALL(1), ENABLE(1));
@@ -43,21 +52,51 @@ void HW_HAL_SPI::init(uint32_t baudrate) {
 
 
 int32_t HW_HAL_SPI::config(SPI_PARAMETER_TYPE type, int32_t value) {
-    if(type == SPI_PARAMETER_MODE) {
-        if(value < 0 || value > 3) {
+    switch(type) {
+        case SPI_PARAMETER_BAUDRATE:
+            if(value <= 0) {
+                return -1;
+            }
+            setBaudrate(value);
+            return 0;
+        case SPI_PARAMETER_MODE:
+            if(value < 0 || value > 3) {
+                return -1;
+            }
+            m_spi.CTRL0.set(SPI_CTRL0::SPO((value >> 1) & 0x1), SPI_CTRL0::SPH(value & 0x1));
+            return 0;
+        default:
+            RODOS_ERROR("SPI config parameter type not yet supported!");
             return -1;
-        }
-        m_spi.CTRL0.set(SPI_CTRL0::SPO((value >> 1) & 0x1), SPI_CTRL0::SPH(value & 0x1));
-        return 0;
     }
-    RODOS_ERROR("SPI config parameter type not yet supported!");
-    return -1;
+}
+
+
+int32_t HW_HAL_SPI::status(SPI_STATUS_TYPE type) {
+    switch(type) {
+        case SPI_STATUS_BAUDRATE: {
+            auto clkprescale { static_cast<uint16_t>(m_spi.CLKPRESCALE.read<SPI_CLKPRESCALE::VALUE>()) };
+            auto scrdv { static_cast<uint16_t>(m_spi.CTRL0.read<SPI_CTRL0::SCRDV>()) };
+            if(clkprescale == 0) {
+                return -1;
+            }
+            return calculateBaudrate(clkprescale, scrdv);
+        }
+        default:
+            RODOS_ERROR("SPI status type not yet supported!");
+            return -1;
+    }
+}
+
+
+void HW_HAL_SPI::setBaudrate(int32_t baudrate) {
+    SpiPrescalers prescalers { calculatePrescalers(baudrate) };
+    m_spi.CLKPRESCALE.write(SPI_CLKPRESCALE::VALUE(prescalers.clkprescale));
+    m_spi.CTRL0.set(SPI_CTRL0::SCRDV(prescalers.scrdv));
 }
 
 
 HW_HAL_SPI::SpiPrescalers HW_HAL_SPI::calculatePrescalers(int32_t baudrate){
-    //see Programmer's Guide section 11.4.5 for baudrate calculation
-    constexpr int32_t CLOCK_FREQUENCY_NO_PRESCALER { globalClockSetup.getSysclkFrequency()/4 };
     constexpr uint8_t MAX_SCRDV_VALUE { 255 };
     constexpr uint8_t MAX_CLKPRESCALE_VALUE { 127 };
     uint16_t bestClkprescaleMatch { 0 };
@@ -66,7 +105,7 @@ HW_HAL_SPI::SpiPrescalers HW_HAL_SPI::calculatePrescalers(int32_t baudrate){
     for(uint16_t scrdv = 0; scrdv<=MAX_SCRDV_VALUE; scrdv++){
         uint16_t maxUsefulClkprescale { static_cast<uint16_t>((scrdv+1)>MAX_CLKPRESCALE_VALUE ? MAX_CLKPRESCALE_VALUE : scrdv+1) };
         for(uint16_t clkprescale = 1; clkprescale<=maxUsefulClkprescale; clkprescale++){
-            int32_t baudrateResult { static_cast<int32_t>(CLOCK_FREQUENCY_NO_PRESCALER/((scrdv+1)*clkprescale)) };
+            int32_t baudrateResult { calculateBaudrate(clkprescale, scrdv) };
             int32_t baudrateError { baudrate-baudrateResult };
             uint32_t absoluteBaudrateError { static_cast<uint32_t>(baudrateError>0 ? baudrateError : -baudrateError) };
             if(absoluteBaudrateError < bestAbsoluteBaudrateError){
