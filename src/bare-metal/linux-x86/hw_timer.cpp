@@ -29,7 +29,7 @@
 volatile long __interruptedInstructionPointer__ = 0;
 
 namespace RODOS {
-    
+
 
 /**
  * Size of stack required by signal handler.
@@ -61,22 +61,29 @@ void timerSignalHandler([[gnu::unused]] int ignore) {
         return;
     }
 
-    long* ebp;
-    __asm__ __volatile__ ("mov %%ebp, %0":"=r"(ebp));
+    /**
+    * __builtin_frame_address(0) forces GCC to set up a frame pointer for this function, even with
+    * -fomit-frame-pointer (the default at -O1 and above). Reading %ebp with inline asm instead
+    * would return the interrupted thread's frame pointer if GCC omits the frame setup.
+    *
+    * The pointer must be volatile: ebp[17] lies in this function's incoming argument area, so GCC
+    * treats the write below as a dead store and removes it at -O2 and above.
+    */
+    auto* ebp = static_cast<volatile long*>(__builtin_frame_address(0));
 
-  /* instruction pointer of interrupted programm is at ebp[17] 
-  * see System V abi and linux src : include/asm-x86/sigcontext32.h 
+  /* instruction pointer of interrupted programm is at ebp[17]
+  * see System V abi and linux src : include/asm-x86/sigcontext32.h
   */
 
-  /* we replace the instruction pointer in the saved context and continue with 
-  * our own context saving procedure 
+  /* we replace the instruction pointer in the saved context and continue with
+  * our own context saving procedure
   */
     __interruptedInstructionPointer__ = ebp[17];
     ebp[17]=(long)__asmSaveContext;
 }
 
 /**
-* initialize the timer and signal handler 
+* initialize the timer and signal handler
 */
 char signalHandlerStack[SIGNAL_HANDLER_STACK_SIZE];
 void Timer::init() {
@@ -111,7 +118,7 @@ void Timer::init() {
 }
 
 /**
-* start timer 
+* start timer
 */
 void Timer::start() {
     itimerval params;
@@ -125,7 +132,7 @@ void Timer::start() {
 }
 
 /**
-* stop timer 
+* stop timer
 */
 void Timer::stop() {
     struct itimerval params;
@@ -139,7 +146,7 @@ void Timer::stop() {
 }
 
 /**
-* set timer interval 
+* set timer interval
 */
 void Timer::setInterval(const long long microsecondsInterval) {
     Timer::microsecondsInterval = microsecondsInterval;
